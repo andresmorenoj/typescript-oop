@@ -2,8 +2,9 @@ import { faker } from '@faker-js/faker';
 
 import { IProduct } from '../models/product.model';
 import { CreateProductDto, UpdateProductDto } from '../dtos/product.dto';
+import { ProductServiceDriver } from '../models/productService.model';
 
-export class ProductMemoryService {
+export class ProductMemoryService implements ProductServiceDriver {
   private products: IProduct[] = [];
 
   create(data: CreateProductDto): IProduct {
@@ -30,7 +31,7 @@ export class ProductMemoryService {
     return product;
   }
 
-  updateProduct = (id: IProduct['id'], changes: UpdateProductDto): IProduct => {
+  update = (id: IProduct['id'], changes: UpdateProductDto): IProduct => {
     const index = this.products.findIndex((item) => item.id === id);
     const prevData = this.products[index];
     this.products[index] = {
