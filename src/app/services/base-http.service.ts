@@ -1,15 +1,21 @@
 import axios from 'axios';
 import { ICategory } from '../models/category.model';
 import { IProduct } from '../models/product.model';
+import { UpdateProductDto } from '../dtos/product.dto';
 
 export class BaseHttpService<TypeClass> {
   // data: TypeClass[] = [];
 
-  constructor(private url: string) {}
+  constructor(protected url: string) {}
 
   async getAll() {
     const { data } = await axios.get<TypeClass[]>(this.url);
     return data;
+  }
+
+  async update<TypeId, TypeDto>(id: TypeId, changes: TypeDto) {
+    const { data } = await axios.put<Promise<IProduct>>(`${this.url}/${id}`, changes)
+    return data
   }
 }
 
@@ -29,10 +35,14 @@ export class BaseHttpService<TypeClass> {
   const productsService = new BaseHttpService<IProduct>(url1);
   const categoriesService = new BaseHttpService<ICategory>(url2);
 
+  await productsService.update<IProduct['id'], UpdateProductDto>(12, {
+    title: 'newTitle'
+  })
+
   const rtaProducts = await productsService.getAll();
   console.log('rtaProducts: ', rtaProducts.length);
 
   const rtaCategories = await categoriesService.getAll();
-  console.log('rtaCategories: ', rtaCategories.length)
+  console.log('rtaCategories: ', rtaCategories.length);
 
 })();
